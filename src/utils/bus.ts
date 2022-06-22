@@ -1,4 +1,6 @@
 import * as robot from "robotjs";
+import {drawCircle} from "./drawCircle";
+import {drawRectangle} from "./drawRectangle";
 
 export const bus = (command: string, commandArgs: string[]) => {
     switch (command) {
@@ -43,5 +45,33 @@ export const bus = (command: string, commandArgs: string[]) => {
             const pos = robot.getMousePos();
             return `${command} ${pos.x},${pos.y}`;
         }
+
+        case 'draw_circle': {
+            if (commandArgs && commandArgs[0]) {
+                const radius = +commandArgs[0];
+                drawCircle(radius);
+            }
+            return command;
+        }
+
+        case 'draw_rectangle': {
+            if (commandArgs && commandArgs?.length >= 2) {
+                const horizontal = +commandArgs[0];
+                const vertical = +commandArgs[1];
+                const {x,y} = drawRectangle(horizontal, vertical);
+                return `${command} ${x} ${y}`
+            }
+            return command;
+        }
+        case 'draw_square': {
+            if (commandArgs && commandArgs[0]) {
+                const horizontal = +commandArgs[0];
+                const vertical = +commandArgs[0];
+                const {x,y} = drawRectangle(horizontal, vertical);
+                return `${command} ${x} ${y}`
+            }
+            return command;
+        }
     }
 }
+
