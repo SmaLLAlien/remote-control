@@ -1,8 +1,7 @@
-import * as Jimp from 'jimp';
 import {httpServer} from './src/http_server';
 import {socket_server} from './src/socket_server';
-import * as robot from 'robotjs';
 import {bus} from "./src/utils/bus";
+import { createWebSocketStream } from 'ws';
 
 
 const HTTP_PORT = 3000;
@@ -14,17 +13,14 @@ socket_server.on("connection", (ws) => {
     console.log('*******************************************');
     console.log(`Client ${JSON.stringify(ws._socket.address())} connected! Welcome!`);
     console.log('*******************************************');
-    ws.on("message", (data) => {
+    const duplex = createWebSocketStream(ws, { encoding: 'utf8', decodeStrings: false });
+    duplex.on('data', async (data) => {
         const packet = data.toString();
         const [command, ...commandArgs] = packet.split(' ');
-        console.log(packet, 'packet');
-        console.log(command, 'command');
-        console.log(commandArgs, 'commandArgs');
 
-        const res = bus(command, commandArgs);
-        console.log(res, 11111);
-        ws.send(res);
-    });
+        const res = await bus(command, commandArgs);
+        duplex.write(res)
+    })
 
     ws.on('close', () => {
         console.log('*******************************************');
@@ -32,4 +28,3 @@ socket_server.on("connection", (ws) => {
         console.log('*******************************************');
     });
 });
-
