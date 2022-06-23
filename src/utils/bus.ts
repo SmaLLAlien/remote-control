@@ -1,8 +1,9 @@
 import * as robot from "robotjs";
 import {drawCircle} from "./drawCircle";
 import {drawRectangle} from "./drawRectangle";
+import {makeScreenshot} from "./makeScreenshot";
 
-export const bus = (command: string, commandArgs: string[]) => {
+export const bus = async (command: string, commandArgs: string[]) => {
     switch (command) {
         case 'mouse_up': {
             if (commandArgs && commandArgs[0]) {
@@ -71,6 +72,9 @@ export const bus = (command: string, commandArgs: string[]) => {
                 return `${command} ${x} ${y}`
             }
             return command;
+        }
+        case 'prnt_scrn': {
+            return await makeScreenshot();
         }
     }
 }
