@@ -51,6 +51,7 @@ export const bus = async (command: string, commandArgs: string[]) => {
             if (commandArgs && commandArgs[0]) {
                 const radius = +commandArgs[0];
                 drawCircle(radius);
+                return `${command} ${radius}`;
             }
             return command;
         }
@@ -68,8 +69,8 @@ export const bus = async (command: string, commandArgs: string[]) => {
             if (commandArgs && commandArgs[0]) {
                 const horizontal = +commandArgs[0];
                 const vertical = +commandArgs[0];
-                const {x,y} = drawRectangle(horizontal, vertical);
-                return `${command} ${x} ${y}`
+                const {x} = drawRectangle(horizontal, vertical);
+                return `${command} ${x}`
             }
             return command;
         }

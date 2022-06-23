@@ -16,5 +16,5 @@ export const drawRectangle = (horizontal: number, vertical: number): {x: number,
         robot.moveMouse(x, y + vertical - i);
     }
     robot.mouseToggle("up");
-    return robot.getMousePos();
+    return {x: horizontal, y: vertical};
 }

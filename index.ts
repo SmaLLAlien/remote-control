@@ -13,12 +13,16 @@ socket_server.on("connection", (ws) => {
     console.log('*******************************************');
     console.log(`Client ${JSON.stringify(ws._socket.address())} connected! Welcome!`);
     console.log('*******************************************');
+
     const duplex = createWebSocketStream(ws, { encoding: 'utf8', decodeStrings: false });
     duplex.on('data', async (data) => {
         const packet = data.toString();
         const [command, ...commandArgs] = packet.split(' ');
 
+        console.log(`Received command: "${command}", аргументы: ${JSON.stringify(commandArgs)}\0`);
         const res = await bus(command, commandArgs);
+        console.log(`RESULT: ${res}\0`);
+
         duplex.write(res)
     })
 
