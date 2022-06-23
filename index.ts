@@ -2,7 +2,7 @@ import {httpServer} from './src/http_server';
 import {socket_server} from './src/socket_server';
 import {bus} from "./src/utils/bus";
 import { createWebSocketStream } from 'ws';
-
+import WebSocket  from 'ws';
 
 const HTTP_PORT = 3000;
 
@@ -23,7 +23,17 @@ socket_server.on("connection", (ws) => {
         const res = await bus(command, commandArgs);
         console.log(`RESULT: ${res}\0`);
 
-        duplex.write(res)
+        for (const client of socket_server.clients) {
+            if (client.readyState !== WebSocket.OPEN) {
+                continue;
+            }
+            if (client === ws) {
+                duplex.write(res);
+            } else {
+                client.send(res);
+            }
+        }
+
     })
 
     ws.on('close', () => {
