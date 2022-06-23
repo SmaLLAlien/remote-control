@@ -3,6 +3,7 @@ import {socket_server} from './src/socket_server';
 import {bus} from "./src/utils/bus";
 import { createWebSocketStream } from 'ws';
 import WebSocket  from 'ws';
+import {handleProcessExit} from "./src/utils/handleProcessExit";
 
 const HTTP_PORT = 3000;
 
@@ -40,5 +41,13 @@ socket_server.on("connection", (ws) => {
         console.log('*******************************************');
         console.log(`Client ${JSON.stringify(ws._socket.address())} Disconnected! Bye!`);
         console.log('*******************************************');
+    });
+});
+
+[`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType, index) => {
+    process.on(eventType, () => {
+        handleProcessExit();
+        WebSocket.close();
+        process.exit(index + 1);
     });
 });
